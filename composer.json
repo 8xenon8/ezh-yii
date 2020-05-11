@@ -19,7 +19,8 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "yiisoft/yii2-debug": "^2.1",
         "yiisoft/yii2-imagine": "^2.2",
-        "richardfan1126/yii2-sortable-gridview": "^0.0.6"
+        "richardfan1126/yii2-sortable-gridview": "^0.0.6",
+        "tpmanc/yii2-imagick": "*"
     },
     "require-dev": {
         "yiisoft/yii2-gii": "~2.1.0",

@@ -10,7 +10,7 @@ use Yii;
  * @property int $id
  * @property string|null $name
  * @property string|null $description
- * @property int $gallery_id
+ * @property int|null $gallery_id
  * @property string|null $orig
  * @property string|null $preview
  * @property string|null $thumb
@@ -46,10 +46,9 @@ class Image extends \yii\db\ActiveRecord
     {
         return [
             [['description'], 'string'],
-            [['gallery_id'], 'required'],
             [['gallery_id', 'orig_width', 'orig_height', 'preview_width', 'preview_height', 'thumb_width', 'thumb_height', 'order'], 'integer'],
             [['publish'], 'boolean'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'gallery_id'], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['orig', 'preview', 'thumb'], 'string', 'max' => 45],
             [['gallery_id'], 'exist', 'skipOnError' => true, 'targetClass' => Gallery::className(), 'targetAttribute' => ['gallery_id' => 'id']],
@@ -83,6 +82,8 @@ class Image extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Gallery]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getGallery()
@@ -91,6 +92,18 @@ class Image extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[ImageHasTags]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImageHasTags()
+    {
+        return $this->hasMany(ImageHasTag::className(), ['image_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Tags]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getTags()

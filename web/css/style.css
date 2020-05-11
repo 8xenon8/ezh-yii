@@ -1,0 +1,138 @@
+html {
+    overflow-y: scroll;
+}
+
+textarea {
+    resize: none;
+}
+
+.zf-green {
+    color: #68b604;
+}
+
+.btn-group,
+.btn-toolbar {
+    margin-bottom: 15px;
+}
+
+.btn-success {
+    background-color: #57a900;
+    background-image: -moz-linear-gradient(top, #70d900, #57a900);
+    background-image: -ms-linear-gradient(top, #70d900, #57a900);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#70d900), to(#57a900));
+    background-image: -webkit-linear-gradient(top, #70d900, #57a900);
+    background-image: -o-linear-gradient(top, #70d900, #57a900);
+    background-image: linear-gradient(top, #70d900, #57a900);
+
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#70d900', endColorstr='#57a900', GradientType=0);
+}
+
+.btn-success:hover,
+.btn-success:active,
+.btn-success.active,
+.btn-success.disabled,
+.btn-success[disabled] {
+    background-color: #57a900;
+}
+
+.btn-success:active,
+.btn-success.active {
+    background-color: #57a900;
+}
+
+div.container a.brand {
+    margin-left: 0;
+    padding: 8px 20px 12px 40px;
+    background: url('../img/zf2-logo.png') no-repeat scroll 0 10px transparent;
+}
+
+ul.category-list {
+    padding-left: 0;
+}
+
+ul.category-list .category-list {
+    padding-left: 20px;
+}
+
+ul.category-list,
+ul.category-list ul {
+    list-style: none;
+}
+
+ul.category-list .category-title {
+    font-size: 1.3em;
+}
+
+li p {
+    margin: 0px;
+}
+
+li .new-subcategory {
+    display: none;
+}
+
+li p:hover .new-subcategory {
+    display: inline;
+}
+
+form label,
+form select {
+    /*display: block;*/
+    /*width: 400px;*/
+}
+
+/*.product_thumbnail {
+    float: left;
+    width: 150px;
+    height: auto;
+    margin: 0 10px 0 0;
+}*/
+
+/*.product_preview {
+    float: left;
+    width: 300px;
+    height: auto;
+    margin: 0 10px 0 0;
+}
+
+.product_preview img {
+    float: left;
+}*/
+
+/*.product_preview > div {
+    display: inline-block;
+}*/
+
+.update_product_preview > div {
+    display: inline-block;
+}
+
+.update_product_preview > div > a {
+    display: block;
+}
+
+.product_preview > div > a {
+    display: block;
+    clear: both;
+}
+
+.edit, .adding{
+    display: inline-block;
+    vertical-align: top;
+}
+
+#auth_form {
+    margin-top: -17px;
+    margin-left: -98px;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+}
+
+tr.pic {
+    background: #fff;
+}
+
+@media only screen and (max-width: 1366px){
+
+}

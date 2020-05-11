@@ -1,4 +1,7 @@
 <?php
+
+require __DIR__ . '/classmap.php';
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 

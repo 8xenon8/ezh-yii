@@ -1,0 +1,77 @@
+<?php
+
+namespace app\services;
+
+use \app\models\Image;
+
+class ImageProcessingService
+{
+	private $watermarkFilepath = __DIR__ . '/../web/img/watermark.png';
+	private $uploadDir = __DIR__ . '/../web/img/upload/';
+
+	public function processImage($file) : Image
+	{
+
+		if (!file_exists($file))
+		{
+			throw new \Exception("File does not exists");
+		}
+
+        $image = new \Imagick();
+		$image->readImage($file);
+
+		/**
+		 * @var \app\models\Image $imageAr
+		 */
+		$imageAr = new Image();
+
+		// Create instance of the Watermark image
+		$watermark = new \Imagick();
+		$watermark->readImage($this->watermarkFilepath);
+
+		// Get image aspect ratio
+		// 
+		// The start coordinates where the file should be printed
+		// $x = 0;
+		// $y = 0;
+
+		// Draw watermark on the image file with the given coordinates
+		// $image->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $x, $y);
+
+		// Generate new name by file hash
+		$newname  = md5_file($file);
+
+		// Save original image
+		$origName = $newname . "." . $image->getImageFormat();
+		$previewName = 'pr_' . $origName;
+		$thumbnailName = 'tn_' . $origName;
+
+		$image->writeImage($this->uploadDir . $origName);
+		$imageAr->orig = $origName;
+		$imageAr->orig_width = $image->getImageWidth();
+		$imageAr->orig_height = $image->getImageHeight();
+
+		// Save preview image
+		$preview = $image->clone();
+		$preview->scaleImage(300, 300, true);
+		$preview->writeImage($this->uploadDir . $previewName);
+		$imageAr->preview = $previewName;
+		$imageAr->preview_width = $preview->getImageWidth();
+		$imageAr->preview_height = $preview->getImageHeight();
+
+		// Save thumb image
+		$thumbnail = $image->clone();
+		$thumbnail->scaleImage(150, 150, true);
+		$thumbnail->writeImage($this->uploadDir . $thumbnailName);
+		$imageAr->thumb = $thumbnailName;
+		$imageAr->thumb_width = $thumbnail->getImageWidth();
+		$imageAr->thumb_height = $thumbnail->getImageHeight();
+
+		if (!$imageAr->save())
+		{
+			throw new \Exception(implode("\n", $imageAr->getErrors()));
+		}
+
+		return $imageAr;
+	}
+}
