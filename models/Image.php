@@ -111,9 +111,9 @@ class Image extends \yii\db\ActiveRecord
         return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('image_has_tag', ['image_id' => 'id']);
     }
 
-    public function OnBeforeDelete()
+    public function beforeDelete()
     {
         $service = new \app\services\ImageProcessingService();
-        $service->deleteImage($this->id);
+        $service->deleteImageFiles($this);
     }
 }

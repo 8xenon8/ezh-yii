@@ -73,4 +73,11 @@ class ImageProcessingService
 
 		return $imageAr;
 	}
+
+	public function deleteImageFiles(\app\models\Image $image) : void
+	{
+		unlink(\Yii::$app->params['uploadPath'] . $image->orig);
+		unlink(\Yii::$app->params['uploadPath'] . $image->preview);
+		unlink(\Yii::$app->params['uploadPath'] . $image->thumb);
+	}
 }
