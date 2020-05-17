@@ -61,6 +61,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        \Yii::$app->db->createCommand("INSERT INTO `nina-ezhik_main`.gallery(name, code, description)VALUES('21', '21', '')")->execute(); die;
         return $this->render('index');
     }
 

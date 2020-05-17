@@ -11,7 +11,6 @@ class ImageProcessingService
 
 	public function processImage($file) : Image
 	{
-
 		if (!file_exists($file))
 		{
 			throw new \Exception("File does not exists");
@@ -19,11 +18,6 @@ class ImageProcessingService
 
         $image = new \Imagick();
 		$image->readImage($file);
-
-		/**
-		 * @var \app\models\Image $imageAr
-		 */
-		$imageAr = new Image();
 
 		// Create instance of the Watermark image
 		$watermark = new \Imagick();
@@ -47,29 +41,34 @@ class ImageProcessingService
 		$thumbnailName = 'tn_' . $origName;
 
 		$image->writeImage($this->uploadDir . $origName);
-		$imageAr->orig = $origName;
-		$imageAr->orig_width = $image->getImageWidth();
-		$imageAr->orig_height = $image->getImageHeight();
 
 		// Save preview image
 		$preview = $image->clone();
 		$preview->scaleImage(300, 300, true);
 		$preview->writeImage($this->uploadDir . $previewName);
-		$imageAr->preview = $previewName;
-		$imageAr->preview_width = $preview->getImageWidth();
-		$imageAr->preview_height = $preview->getImageHeight();
 
 		// Save thumb image
 		$thumbnail = $image->clone();
 		$thumbnail->scaleImage(150, 150, true);
 		$thumbnail->writeImage($this->uploadDir . $thumbnailName);
+
+		/**
+		 * @var \app\models\Image $imageAr
+		 */
+		$imageAr = new Image();
+		$imageAr->orig = $origName;
+		$imageAr->orig_width = $image->getImageWidth();
+		$imageAr->orig_height = $image->getImageHeight();
+		$imageAr->preview = $previewName;
+		$imageAr->preview_width = $preview->getImageWidth();
+		$imageAr->preview_height = $preview->getImageHeight();
 		$imageAr->thumb = $thumbnailName;
 		$imageAr->thumb_width = $thumbnail->getImageWidth();
 		$imageAr->thumb_height = $thumbnail->getImageHeight();
 
 		if (!$imageAr->save())
 		{
-			throw new \Exception(implode("\n", $imageAr->getErrors()));
+			throw new \Exception(implode("\n", array_map(function($i) { return implode("\n", $i); }, $imageAr->getErrors())));
 		}
 
 		return $imageAr;
