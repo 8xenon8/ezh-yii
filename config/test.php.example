@@ -42,4 +42,7 @@ return [
         ],
     ],
     'params' => $params,
+
+$config['params']['masterPasswordHash'] = 'testPassword';
+$config['params']['accessToken'] = 'testToken';
 ];

@@ -8,7 +8,18 @@
 
 namespace app\modules\api\controllers;
 
+use app\services\ImageProcessingService;
+use yii\rest\Action;
 use yii\rest\ActiveController;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\QueryParamAuth;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+
+use yii\web\UploadedFile;
+use app\models\Image;
+
+require_once __DIR__ . '/actions/TagActions.php';
 
 /**
  * Class ImageController
@@ -16,25 +27,57 @@ use yii\rest\ActiveController;
  */
 class ImageController extends ActiveController
 {
-    public $modelClass = 'app\models\Image';
+    public $modelClass = \app\models\Image::class;
 
     public function actions()
     {
-        return [];
+        $actions = parent::actions();
+        unset($actions['create']);
+
+        $actions['bindTag'] = [
+            'class' => '\app\modules\api\controllers\BindTagAction',
+            'modelClass' => $this->modelClass,
+            'checkAccess' => [$this, 'checkAccess'],
+        ];
+
+        $actions['unbindTag'] = [
+            'class' => '\app\modules\api\controllers\UnbindTagAction',
+            'modelClass' => $this->modelClass,
+            'checkAccess' => [$this, 'checkAccess'],
+        ];
+
+        return $actions;
     }
 
-    protected function verbs(){
-        return [
-            'create' => ['POST'],
-            'update' => ['PUT', 'PATCH','POST'],
-            'delete' => ['DELETE'],
-            'view' => ['GET'],
-            'index'=>['GET'],
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => CompositeAuth::className(),
+            'authMethods' => [
+                QueryParamAuth::className(),
+            ],
+            'except' => ['index']
         ];
+
+        return $behaviors;
     }
 
     public function actionCreate()
     {
-        die('213');
+        $files = UploadedFile::getInstancesByName("image");
+        $ids = [];
+
+        foreach ($files as $file) {
+            $service = new ImageProcessingService();
+            $image = $service->processImage($file);
+            $ids[] = $image['id'];
+        }
+
+        if (empty($ids)) {
+            \Yii::$app->response->setStatusCode(400);
+        }
+
+        return $ids;
     }
 }

@@ -10,9 +10,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     public $authKey;
     public $accessToken;
 
-    private static $users = [];
-
-    private static $masterPasswordHash = '$2y$13$Mm5XOED8vz1f.atpXMbBn.L2Znaiqh01sCYp05fdjzy7ZatEe1ltW';
+    private static $user = [];
 
 
     /**
@@ -20,13 +18,9 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentity($id)
     {
-//        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
         if ($id == 1)
         {
-            $user = new User();
-            $user->id = 1;
-            $user->username = 'ezh';
-            return $user;
+            return static::getUser();
         } else {
             return null;
         }
@@ -37,10 +31,11 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
+        $user = User::getUser();
+
+        if ($user->accessToken == $token)
+        {
+            return $user;
         }
 
         return null;
@@ -95,6 +90,18 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($this->password, self::$masterPasswordHash);
+        return \Yii::$app->security->validatePassword($this->password, \Yii::$app->params['masterPasswordHash']);
+    }
+
+    /**
+     * @return static
+     */
+    public static function getUser() : self
+    {
+        $user = new User();
+        $user->id = 1;
+        $user->username = 'ezh';
+        $user->accessToken = \Yii::$app->params['accessToken'];
+        return $user;
     }
 }

@@ -3,13 +3,14 @@
 namespace tests\unit\services;
 
 use \app\models\Image;
+use app\services\ImageProcessingService;
 
 class ImageProcessingServiceTest extends \Codeception\Test\Unit
 {
 	private $filename = __DIR__ . "/files/imageProcessingServiceTestFile.jpg";
 
     /**
-     * @var \app\models\Image $imageAr;
+     * @var Image $imageAr;
      */
 	private $imageAr;
 
@@ -29,7 +30,7 @@ class ImageProcessingServiceTest extends \Codeception\Test\Unit
 
 	public function testProcessImage()
 	{
-		$service = new \app\services\ImageProcessingService();
+		$service = new ImageProcessingService();
 
 		$this->assertFalse(file_exists($this->getUploadDir() . $this->expectedOrigName), "Ensure that original file does not exists");
 		$this->assertFalse(file_exists($this->getUploadDir() . $this->expectedPreviewName), "Ensure that preview file does not exists");
@@ -47,23 +48,21 @@ class ImageProcessingServiceTest extends \Codeception\Test\Unit
 		$this->assertTrue(file_exists($this->getUploadDir() . $this->expectedThumbnailName), "Ensure that thumb file was created");
 	}
 
-	public function testDeleteImage()
+	public function testDeleteImageFiles()
 	{
-		$uploadPath = \Yii::$app->params['uploadPath'];
-
-		$service = new \app\services\ImageProcessingService();
+	    $service = new ImageProcessingService();
 
 		$image = $service->processImage($this->filename);
 
-		$this->assertTrue(file_exists($this->getUploadDir() . $image->orig));
-		$this->assertTrue(file_exists($this->getUploadDir() . $image->preview));
-		$this->assertTrue(file_exists($this->getUploadDir() . $image->thumb));
+		$this->assertTrue(file_exists($this->getUploadDir() . $image->orig), 'Ensure file was created');
+		$this->assertTrue(file_exists($this->getUploadDir() . $image->preview), 'Ensure file was created');
+		$this->assertTrue(file_exists($this->getUploadDir() . $image->thumb), 'Ensure file was created');
 
 		$image->delete();
 
-		$this->assertFalse(file_exists($this->getUploadDir() . $image->orig));
-		$this->assertFalse(file_exists($this->getUploadDir() . $image->preview));
-		$this->assertFalse(file_exists($this->getUploadDir() . $image->thumb));
+		$this->assertFalse(file_exists($this->getUploadDir() . $image->orig), 'File is deleted');
+		$this->assertFalse(file_exists($this->getUploadDir() . $image->preview), 'File is deleted');
+		$this->assertFalse(file_exists($this->getUploadDir() . $image->thumb), 'File is deleted');
 	}
 
     protected function clear()

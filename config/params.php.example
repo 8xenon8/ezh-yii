@@ -7,4 +7,7 @@ return [
     
     'basePath' => __DIR__ . '/../',
     'uploadPath' => __DIR__ . '/../web/img/upload/'
+
+    'masterPasswordHash' => 'passwordHas',
+    'accessToken' => 'token'
 ];

@@ -81,6 +81,14 @@ class Image extends \yii\db\ActiveRecord
         ];
     }
 
+    public function scenarios()
+    {
+        return [
+            'default' => ['name', 'description', 'publish', 'order'],
+            'create' => ['orig', 'orig_width', 'orig_height', 'preview', 'preview_width', 'preview_height', 'thumb', 'thumb_width', 'thumb_height']
+        ];
+    }
+
     /**
      * Gets query for [[Gallery]].
      *
@@ -115,5 +123,6 @@ class Image extends \yii\db\ActiveRecord
     {
         $service = new \app\services\ImageProcessingService();
         $service->deleteImageFiles($this);
+        return true;
     }
 }
