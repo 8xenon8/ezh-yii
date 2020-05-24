@@ -125,4 +125,14 @@ class Image extends \yii\db\ActiveRecord
         $service->deleteImageFiles($this);
         return true;
     }
+
+    public function hasTag(string $tagName) : bool
+    {
+        /** @var Tag $tag */
+        foreach ($this->tags as $tag)
+        {
+            if ($tag->name == $tagName) { return true; }
+        }
+        return false;
+    }
 }

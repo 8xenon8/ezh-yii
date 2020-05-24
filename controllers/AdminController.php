@@ -28,7 +28,7 @@ class AdminController extends \yii\web\Controller
 
     public function actionIndex()
     {
-        $query = Image::find()->where(['publish' => true]);
+        $query = Image::find()->all();
 
         $provider = new ActiveDataProvider([
             'query' => $query,

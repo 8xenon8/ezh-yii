@@ -34,14 +34,14 @@ class ImageController extends ActiveController
         $actions = parent::actions();
         unset($actions['create']);
 
-        $actions['bindTag'] = [
-            'class' => '\app\modules\api\controllers\BindTagAction',
+        $actions['toggleTag'] = [
+            'class' => '\app\modules\api\controllers\ToggleTagAction',
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
         ];
 
-        $actions['unbindTag'] = [
-            'class' => '\app\modules\api\controllers\UnbindTagAction',
+        $actions['toggleTag'] = [
+            'class' => '\app\modules\api\controllers\ToggleTagAction',
             'modelClass' => $this->modelClass,
             'checkAccess' => [$this, 'checkAccess'],
         ];
@@ -66,18 +66,17 @@ class ImageController extends ActiveController
     public function actionCreate()
     {
         $files = UploadedFile::getInstancesByName("image");
-        $ids = [];
+        $images = [];
 
         foreach ($files as $file) {
             $service = new ImageProcessingService();
-            $image = $service->processImage($file);
-            $ids[] = $image['id'];
+            $images[] = $service->processImage($file);
         }
 
-        if (empty($ids)) {
+        if (empty($images)) {
             \Yii::$app->response->setStatusCode(400);
         }
 
-        return $ids;
+        return $images;
     }
 }
