@@ -2,8 +2,6 @@
 
 namespace app\modules\api;
 
-use yii\web\Response;
-
 /**
  * api module definition class
  */

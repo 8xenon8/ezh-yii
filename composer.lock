@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a75aeffdac96b61ea84c5a3e56e12e58",
+    "content-hash": "f8b0ace9a5a621e96509aea66b13f7fc",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -85,6 +85,26 @@
             "type": "bower-asset",
             "license": [
                 "MIT"
+            ]
+        },
+        {
+            "name": "bower-asset/pnotify",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:sciactive/pnotify.git",
+                "reference": "4ca6d8089ec45997ae7be37efc51f1ddad336933"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sciactive/pnotify/zipball/4ca6d8089ec45997ae7be37efc51f1ddad336933",
+                "reference": "4ca6d8089ec45997ae7be37efc51f1ddad336933"
+            },
+            "type": "bower-asset",
+            "license": [
+                "GPL-3.0",
+                "LGPL-3.0",
+                "MPL-1.1"
             ]
         },
         {
@@ -349,6 +369,142 @@
                 "html"
             ],
             "time": "2019-10-28T03:44:26+00:00"
+        },
+        {
+            "name": "hiqdev/yii2-asset-pnotify",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hiqdev/yii2-asset-pnotify.git",
+                "reference": "d5bfa39fba84741523238e53b85ef7c2f37b789f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hiqdev/yii2-asset-pnotify/zipball/d5bfa39fba84741523238e53b85ef7c2f37b789f",
+                "reference": "d5bfa39fba84741523238e53b85ef7c2f37b789f",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/pnotify": "2.1.0"
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "hiqdev\\assets\\pnotify\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Andrii Vasyliev",
+                    "email": "sol@hiqdev.com",
+                    "homepage": "https://hipanel.com/",
+                    "role": "Project lead"
+                },
+                {
+                    "name": "Andrey Klochok",
+                    "email": "tafid@hiqdev.com",
+                    "homepage": "https://hiqdev.com/",
+                    "role": "Lead frontend developer"
+                },
+                {
+                    "name": "Yuriy Myronchuk",
+                    "email": "bladeroot@hiqdev.com",
+                    "homepage": "https://hiqdev.com/",
+                    "role": "QA Lead"
+                },
+                {
+                    "name": "Dmitry Naumenko",
+                    "email": "silverfire@hiqdev.com",
+                    "homepage": "http://silverfire.me/",
+                    "role": "Lead backend developer"
+                }
+            ],
+            "description": "Yii2 Asset Pnotify",
+            "homepage": "https://github.com/hiqdev/yii2-asset-pnotify",
+            "keywords": [
+                "asset",
+                "pnotify",
+                "yii2"
+            ],
+            "time": "2015-09-09T15:16:38+00:00"
+        },
+        {
+            "name": "hiqdev/yii2-pnotify",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hiqdev/yii2-pnotify.git",
+                "reference": "2a550917e5d2a7ef12a5824491b4989ac65648ea"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hiqdev/yii2-pnotify/zipball/2a550917e5d2a7ef12a5824491b4989ac65648ea",
+                "reference": "2a550917e5d2a7ef12a5824491b4989ac65648ea",
+                "shasum": ""
+            },
+            "require": {
+                "hiqdev/yii2-asset-pnotify": "*",
+                "yiisoft/yii2-bootstrap": "~2.0.0"
+            },
+            "require-dev": {
+                "hiqdev/hidev-hiqdev": "<2.0",
+                "hiqdev/hidev-php": "<2.0",
+                "yiisoft/yii2": "dev-master",
+                "yiisoft/yii2-bootstrap": "dev-master"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "config-plugin": {
+                    "web": "src/config/web.php"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "hiqdev\\pnotify\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Andrii Vasyliev",
+                    "email": "sol@hiqdev.com",
+                    "homepage": "http://hipanel.com/",
+                    "role": "Project lead"
+                },
+                {
+                    "name": "Dmitry Naumenko",
+                    "email": "d.naumenko.a@gmail.com",
+                    "homepage": "http://silverfire.me/",
+                    "role": "Lead backend developer"
+                },
+                {
+                    "name": "Andrey Klochok",
+                    "email": "andreyklochok@gmail.com",
+                    "homepage": "http://hiqdev.com/",
+                    "role": "Lead frontend developer"
+                },
+                {
+                    "name": "Yuriy Myronchuk",
+                    "email": "bladeroot@gmail.com",
+                    "homepage": "http://hiqdev.com/",
+                    "role": "QA Lead"
+                }
+            ],
+            "description": "Yii2 adapter for PNotify JQuery extension",
+            "homepage": "https://github.com/hiqdev/yii2-pnotify",
+            "keywords": [
+                "jquery",
+                "pnotify",
+                "yii2"
+            ],
+            "time": "2017-05-05T16:27:27+00:00"
         },
         {
             "name": "imagine/imagine",
