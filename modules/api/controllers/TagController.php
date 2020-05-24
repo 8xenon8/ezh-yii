@@ -35,7 +35,7 @@ class TagController extends ActiveController
         $tag->name = $tagName;
         if (!$tag->save())
         {
-            throw new BadRequestHttpException(implode('; ', $tag->getErrorSummary()));
+            throw new BadRequestHttpException(implode('; ', $tag->getErrorSummary(true)));
         }
         \Yii::$app->response->setStatusCode(200);
         return $tag;
