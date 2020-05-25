@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Image;
 use app\tests\fixtures\ImageFixture;
 use app\tests\fixtures\TagFixture;
 
@@ -94,6 +95,27 @@ class ImageCest
         $I->seeResponseCodeIs(404);
 
         $I->sendDELETE("/api/images/999/tags/tag1?access-token=" . $this->getToken());
+        $I->seeResponseCodeIs(404);
+    }
+
+    public function testFilesIsDeleted(ApiTester $I)
+    {
+        $I->sendPOST("/api/images?access-token=". $this->getToken(), [], ['image' => codecept_data_dir() . '/testImage.jpg']);
+        $I->seeResponseCodeIs(200);
+
+        $response = (json_decode($I->grabResponse()))[0];
+
+        $imageId = $response->id;
+
+        $I->sendDELETE("/api/images/$imageId?access-token=" . $this->getToken());
+
+        $I->sendGET("/img/upload/" . $response->orig);
+        $I->seeResponseCodeIs(404);
+
+        $I->sendGET("/img/upload/" . $response->preview);
+        $I->seeResponseCodeIs(404);
+
+        $I->sendGET("/img/upload/" . $response->thumb);
         $I->seeResponseCodeIs(404);
     }
 
