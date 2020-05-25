@@ -10,6 +10,8 @@ namespace app\modules\api\controllers;
 
 
 use app\models\Tag;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\QueryParamAuth;
 use yii\rest\ActiveController;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
@@ -27,6 +29,20 @@ class TagController extends ActiveController
         unset($actions['create']);
         unset($actions['delete']);
         return $actions;
+    }
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => CompositeAuth::className(),
+            'authMethods' => [
+                QueryParamAuth::className(),
+            ],
+            'except' => ['index']
+        ];
+
+        return $behaviors;
     }
 
     public function actionCreate(string $tagName)

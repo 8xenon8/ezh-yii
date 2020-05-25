@@ -4,6 +4,7 @@ namespace app\modules\admin\controllers;
 
 use app\models\Image;
 use app\models\Tag;
+use himiklab\sortablegrid\SortableGridAction;
 use richardfan\sortable\SortableAction;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -36,10 +37,11 @@ class DefaultController extends Controller
 
     public function actionImages()
     {
-        $query = Image::find();
+        $imagesQuery = Image::find()->joinWith('tags' );
+        $tags = Tag::find()->asArray()->all();
 
-        $provider = new ActiveDataProvider([
-            'query' => $query,
+        $imagesProvider = new ActiveDataProvider([
+            'query' => $imagesQuery,
             'pagination' => false,
             'sort' => [
                 'defaultOrder' => [
@@ -49,13 +51,14 @@ class DefaultController extends Controller
         ]);
 
         return $this->render('images', [
-            'dataProvider' => $provider
+            'imagesDataProvider' => $imagesProvider,
+            'tags' => $tags
         ]);
     }
 
     public function actionSorting()
     {
-        return $this->render('sortings');
+        return $this->render('sorting');
     }
 
     public function actionTags()
@@ -64,11 +67,11 @@ class DefaultController extends Controller
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => false,
-//            'sort' => [
-//                'defaultOrder' => [
-//                    'order' => SORT_DESC
-//                ]
-//            ]
+            'sort' => [
+                'defaultOrder' => [
+                    'order' => SORT_DESC
+                ]
+            ]
         ]);
 
         return $this->render('tags', ['dataProvider' => $dataProvider]);
@@ -78,9 +81,8 @@ class DefaultController extends Controller
     {
         return [
             'sortItem' => [
-                'class' => SortableAction::class,
-                'activeRecordClassName' => Image::class,
-                'orderColumn' => 'order',
+                'class' => SortableGridAction::className(),
+                'modelName' => Image::className(),
             ],
         ];
     }

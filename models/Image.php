@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use himiklab\sortablegrid\SortableGridBehavior;
 use Yii;
 
 /**
@@ -86,6 +87,16 @@ class Image extends \yii\db\ActiveRecord
         return [
             'default' => ['name', 'description', 'publish', 'order'],
             'create' => ['orig', 'orig_width', 'orig_height', 'preview', 'preview_width', 'preview_height', 'thumb', 'thumb_width', 'thumb_height']
+        ];
+    }
+
+    public function behaviors()
+    {
+        return [
+            'sort' => [
+                'class' => SortableGridBehavior::className(),
+                'sortableAttribute' => 'order'
+            ],
         ];
     }
 
