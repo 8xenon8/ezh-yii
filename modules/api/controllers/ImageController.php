@@ -40,12 +40,6 @@ class ImageController extends ActiveController
             'checkAccess' => [$this, 'checkAccess'],
         ];
 
-        $actions['toggleTag'] = [
-            'class' => '\app\modules\api\controllers\ToggleTagAction',
-            'modelClass' => $this->modelClass,
-            'checkAccess' => [$this, 'checkAccess'],
-        ];
-
         return $actions;
     }
 

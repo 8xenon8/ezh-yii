@@ -71,8 +71,20 @@
         margin: 20px 0 0;
     }
 
-    .hiddenTag{
+    #pictable .badge.btn-success
+    {
+        background-color: #449d44;
+        border-color: #398439;
+    }
+
+    #pictable tr .tagBlock .badge
+    {
         display: none;
+    }
+
+    #pictable tr .tagBlock .badge.btn-success, #pictable tr:hover .tagBlock .badge
+    {
+        display: inline-block;
     }
 
     tr:hover .hiddenTag
@@ -104,13 +116,26 @@
         $scope.images = <?= json_encode($imagesDataProvider->query->asArray()->all(), JSON_NUMERIC_CHECK)?>;
         $scope.tags = <?= json_encode($tags, JSON_NUMERIC_CHECK)?>;
 
+        for (var i in $scope.images) {
+            $scope.images[i].publish = !!$scope.images[i].publish;
+            $scope.images[i].tags = $scope.images[i].tags.map(function(i) { return i.name; });
+        }
+
         $scope.resetTags = function() {
             for (let i in $scope.tags) {
                 $scope.tags[i]['checked'] = false;
             }
         }
 
-        $scope.imageForTags = null;
+        $scope.imageHasTag = function(image, tag)
+        {
+            for (let i in image.tags) {
+                if (image.tags[i] == tag.name) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         $scope.resetTags();
 
@@ -123,27 +148,22 @@
         $scope.selectedAll = false;
 
         $scope.selectAll = function() {
-
-            // $scope.selectedAll = !$scope.selectedAll;
-
             for (let i in $scope.images) {
                 $scope.images[i].active = $scope.selectedAll;
             }
         }
 
         $scope.uploadData = function() {
-
-
             $('.pic.dirty').each(function(index, element) {
                 let id = element.id;
 
                 let image = $scope.getImageById(id);
 
-                if (!image) { return; };
+                if (!image) { return; }
 
                 $http({
                     method: 'PATCH',
-                    url: "/api/images/" + id + "<?= \Yii::$app->params['accessToken']; ?>",
+                    url: "/api/images/" + id + "?access-token=<?= \Yii::$app->params['accessToken']; ?>",
                     data: $httpParamSerializer({
                         name: $(element).find('.name').val(),
                         description: $(element).find('.description').val(),
@@ -154,9 +174,9 @@
                     }
                 }).then(function(data) {
 
+                    PNotify.success("Изображение #" + image.id + " изменено");
                     $(element).removeClass('dirty');
 
-                    image.order = parseInt($(element).find('.order').val());
                     image.dirty = false;
                     image.new = false;
                     image.error = false;
@@ -165,21 +185,50 @@
 
                 }, function(data) {
 
-                    image.order = parseInt($(element).find('.order').val());
+                    PNotify.error('Не удалось изменить данные изображения');
+
                     image.error = true;
                     image.new = false;
 
                     $scope.sortImages();
+                }).catch(function(err) {
+                    PNotify.error('Не удалось изменить данные изображения');
                 });
             });
 
         }
 
-        $scope.doAction = function() {
-            $scope.selectedAction.action();
-        };
+        $scope.togglePublish = function(image) {
+            image.publishOld = !image.publish;
+            $http({
+                method: 'PATCH',
+                url: "/api/images/" + image.id + "?access-token=<?= \Yii::$app->params['accessToken'];?>",
+                data: $httpParamSerializer({publish: image.publish * 1}), // casting bool to int
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            }).then(function(data) {
+                if (data.data.publish == 1) {
+                    PNotify.success("Изображение #" + image.id + " опубликовано");
+                } else {
+                    PNotify.success("Изображение #" + image.id + " снято с публикации");
+                }
+                image.publishOld = image.publish;
+            }, function(data) {
+                image.publish = image.publishOld;
 
-        $scope.publish = function() {
+                PNotify.error('Не удалось изменить статус изображения');
+
+            }).catch(function(err) {
+                image.publish = image.publishOld;
+
+                PNotify.error('Не удалось изменить статус изображения');
+            });
+        }
+
+        $scope.deleteImages = function() {
+
+            if (!confirm("Вы уверены, что хотите удалить изображения?")) { return; }
 
             $('.pic.active').each(function(index, element) {
                 let id = element.id;
@@ -189,117 +238,20 @@
                 if (!image) { return; };
 
                 $http({
-                    method: 'POST',
-                    url: location.href + "/publish/" + id,
+                    method: 'DELETE',
+                    url: "/api/images/" + id + "?access-token=<?= \Yii::$app->params['accessToken'];?>",
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(function(data) {
 
-                    $(element).removeClass('dirty');
-
-                    image.publish = true;
-                    image.active = false;
-                    image.error = false;
-
-                }, function(data) {
-
-                    image.error = true;
-                    image.active = false;
-
-                });
-            });
-
-        }
-
-        $scope.unpublish = function() {
-
-            $('.pic.active').each(function(index, element) {
-                let id = element.id;
-
-                let image = $scope.getImageById(id);
-
-                if (!image) { return; };
-
-                $http({
-                    method: 'POST',
-                    url: location.href + "/unpublish/" + id,
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }).then(function(data) {
-
-                    $(element).removeClass('dirty');
-
-                    image.publish = false;
-                    image.active = false;
-                    image.error = false;
-
-                }, function(data) {
-
-                    image.error = true;
-                    image.active = false;
-
-                });
-            });
-
-        }
-
-        $scope.move = function() {
-
-            $('.pic.active').each(function(index, element) {
-                let id = element.id;
-
-                let image = $scope.getImageById(id);
-
-                if (!image) { return; };
-
-                $http({
-                    method: 'POST',
-                    url: "/admin/move",
-                    data: $httpParamSerializer({
-                        image_id: image.id
-                    }),
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }).then(function(data) {
-
+                    PNotify.success('Изображение удалено');
                     $scope.images = $scope.images.filter(function(i) { return i.id != id; });
                     $scope.sortImages();
 
                 }, function(data) {
 
-                    image.error = true;
-                    image.active = false;
-
-                });
-            });
-
-        }
-
-        $scope.deleteImage = function() {
-
-            $('.pic.active').each(function(index, element) {
-                let id = element.id;
-
-                let image = $scope.getImageById(id);
-
-                if (!image) { return; };
-
-                $http({
-                    method: 'POST',
-                    url: location.href + "/deleteImage/" + id,
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }).then(function(data) {
-
-                    $scope.images = $scope.images.filter(function(i) { return i.id != id; });
-                    $scope.sortImages();
-
-                }, function(data) {
-
+                    PNotify.error('Не удалось удалить изображение');
                     image.error = true;
                     image.active = false;
 
@@ -319,160 +271,30 @@
             return false;
         }
 
-        $scope.actions = [
-            {
-                action: $scope.deleteImage,
-                label: 'Удалить'
-            },
-            {
-                action: $scope.publish,
-                label: 'Опубликовать'
-            },
-            {
-                action: $scope.unpublish,
-                label: 'Снять с публикации'
-            },
-            {
-                action: $scope.move,
-                label: 'Переместить в...',
-                showGalleryList: true
-            }
-        ];
-
-        $scope.selectedAction = $scope.actions[0];
-
-        $scope.getTags = function(id) {
-
-            $scope.imageForTags = id;
-
-            $http({
-                method: 'GET',
-                url: location.href + "/get-tags/" + id,
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).then(function(data) {
-
-                let checked = data.data.tags;
-
-                for (let i in $scope.tags) {
-                    let tag = $scope.tags[i];
-
-                    if (checked.indexOf(tag.id) != -1) {
-                        tag.checked = true;
-                    }
-                }
-
-                $scope.showTags = true;
-
-            }, function(data) {
-
-
-
-            });
-
-        }
-
-        $scope.saveTags = function() {
-
-            let selected = $scope.tags.filter(function(i) {
-                return i.checked;
-            }).map(function(i) {
-                return i.id;
-            });
-
-            $http({
-                method: 'POST',
-                url: location.href + "/save-tags/" + $scope.imageForTags,
-                data: $httpParamSerializer(selected),
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).then(function(data) {
-
-            }, function(data) {
-
-
-
-            });
-
-            $scope.showTags = false;
-
-            $scope.resetTags();
-        }
-
-        $scope.saveAllTags = function() {
-            var ids = [];
-            var tags = [];
-
-            $('.pic.active').each(function(index, element) {
-                ids.push(element.id);
-            });
-
-            $('.tagBlock input:checked').each(function(index, element) {
-                tags.push(element.value);
-            });
-
-            $http({
-                method: 'POST',
-                url: location.href + "/save-tags/" + ids.join(','),
-                data: $httpParamSerializer(tags),
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).then(function(data) {
-                $.notify(data.data.success, {
-                    className: 'success'
-                });
-            }, function(data) {
-                $.notify(data.data.success, {
-                    className: 'fail'
-                });
-            });
-        }
-
         $scope.toggle = function($event, image) {
             if ($event.target.localName == 'td' || $event.target.localName == 'tr') {
                 image.active = !image.active;
             };
         }
 
-        $scope.changeImageOrder = function(item, target) {
+        $scope.toggleTag = function(image, tag, create) {
             $http({
-                method: 'POST',
-                url: "/admin/change-image-order",
-                data: $httpParamSerializer({'item': item, 'target': target}),
+                method: create ? 'POST' : 'DELETE',
+                url: "/api/images/" + image.id + "/tags/" + tag.name + "?access-token=<?= \Yii::$app->params['accessToken'];?>",
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             }).then(function(data) {
-                // $('.pic').each(function(i, e) {
-                // $(e).attr('data-order', $(e).index() - 2);
-                // });
-            }, function(data) {
-                alert('Failed to sort image');
-            });
-        }
-
-        $scope.toggleTag = function(image, tagId)
-        {
-            $http({
-                method: 'POST',
-                url: "/admin/toggle-tag",
-                data: $httpParamSerializer({'tag_id': tagId, 'image_id': image.id}),
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            }).then(function(data) {
-                if (image.tags.indexOf(tagId) !== -1) {
+                if (!create) {
                     image.tags = image.tags.filter(function (i) {
-                        return i != tagId;
+                        return i != tag.name;
                     });
                 } else {
-                    image.tags.push(tagId);
+                    image.tags.push(tag.name);
                 }
+                PNotify.success('Статус тэга изменен')
             }, function() {
-                alert('Failed to toggle tag');
+                PNotify.error('Не удалось изменить статус тэга')
             });
         }
 
@@ -541,22 +363,6 @@
 
     <div ng-controller="UploadController" ng-cloak>
 
-        <div class="modalBG" ng-show="showTags">
-
-            <div class="tagModal">
-
-                <div ng-repeat="tag in tags" class="tagCont">
-                    {{tag.name}}: <input type="checkbox" class="tag" ng-model="tag.checked">
-                </div>
-
-                <br />
-
-                <input type="button" ng-click="saveTags()" class="save" value="Сохранить">
-
-            </div>
-
-        </div>
-
         <table class="pictable" id="pictable">
             <tbody as-sortable ng-model="images">
             <tr>
@@ -577,25 +383,24 @@
                     <textarea ng-model="image.description" class="description" ng-change="image.dirty = true">{{image.description}}</textarea>
                 </td>
                 <td>
-                    {{image.publish ? 'Да' : 'Нет'}}
+                    <input type="checkbox" ng-model="image.publish" ng-change="togglePublish(image)">
                 </td>
                 <td>
-                    <!--            <input type="button" ng-click="getTags(image.id)" value="Тэги">-->
                     <div class="tagBlock">
-                        <a ng-repeat="(index, tag) in tags" ng-click="toggleTag(image, tag.id)" class="badge" ng-class="{'btn-success': (image.tags.indexOf(tag.id) != -1), 'btn-info hiddenTag': (image.tags.indexOf(tag.id) == -1)}">#{{tag.name}}</a>
+                        <a ng-repeat="(index, tag) in tags" ng-click="toggleTag(image, tag, !imageHasTag(image, tag))" class="badge" ng-class="{'btn-success': (imageHasTag(image, tag))}">#{{tag.name}}</a>
                     </div>
                 </td>
                 <td>
                     <input ng-model="image.active" type="checkbox" ng-checked="image.active">
                 </td>
             </tr>
-            <tr><td></td><td></td><td></td><td></td><td></td><td></td><td><input type="checkbox" ng-model="selectedAll" ng-click="selectAll()"></td></tr>
+            <tr><td></td><td></td><td></td><td></td><td></td><td><input type="checkbox" ng-model="selectedAll" ng-click="selectAll()"></td></tr>
             </tbody>
         </table>
 
         <input type="submit" ng-click="uploadData()" ng-show="images.length > 0">
 
-        <select ng-model="selectedAction" ng-options="action as action.label for action in actions track by action.action" ng-show="images.length > 0"></select>
+        <input type="button" ng-click="deleteImages()" value="Удалить выбранные" ng-show="images.length > 0" style="float: right">
 
         <form dropzone="" class="dropzone"></form>
     </div>

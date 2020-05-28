@@ -13,7 +13,7 @@
 
             $http({
                 method: 'POST',
-                url: "/api/tags/" + name + "<?= \Yii::$app->params["accessToken"]; ?>",
+                url: "/api/tags/" + name + "?access-token=<?= \Yii::$app->params["accessToken"]; ?>",
                 data: $httpParamSerializer({name: $scope.newTagName}),
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
@@ -42,7 +42,7 @@
 
                 $http({
                     method: 'DELETE',
-                    url: "/api/tags/" + name + "<?= \Yii::$app->params["accessToken"]; ?>"
+                    url: "/api/tags/" + name + "?access-token=<?= \Yii::$app->params["accessToken"]; ?>"
                 }).then(function(response) {
                     if (response.status == 204) {
                         $scope.tags = $scope.tags.filter(function (i) { return i.name != name; });
