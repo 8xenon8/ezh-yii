@@ -58,7 +58,13 @@ class DefaultController extends Controller
 
     public function actionSorting()
     {
-        return $this->render('sorting');
+        $dataProvider = new ActiveDataProvider([
+            'query' => Image::find()->asArray()
+        ]);
+
+        return $this->render('sorting', [
+            'dataProvider' => $dataProvider
+        ]);
     }
 
     public function actionTags()
@@ -75,15 +81,5 @@ class DefaultController extends Controller
         ]);
 
         return $this->render('tags', ['dataProvider' => $dataProvider]);
-    }
-
-    public function actions()
-    {
-        return [
-            'sortItem' => [
-                'class' => SortableGridAction::className(),
-                'modelName' => Image::className(),
-            ],
-        ];
     }
 }

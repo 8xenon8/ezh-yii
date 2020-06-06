@@ -16,6 +16,7 @@ use yii\filters\auth\QueryParamAuth;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
+use yii\rest\UpdateAction;
 use yii\web\UploadedFile;
 use app\models\Image;
 

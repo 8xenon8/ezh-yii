@@ -29,6 +29,7 @@ phpunit.phar
 
 tests/_output/*
 tests/_support/_generated
+tests/api.suite.yml
 
 #vagrant folder
 /.vagrant
@@ -39,3 +40,5 @@ tests/_support/_generated
 /config/test_db.php
 /config/console.php
 /config/params.php
+
+/web/img/upload/*

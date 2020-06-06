@@ -3,7 +3,10 @@
 namespace app\models;
 
 use himiklab\sortablegrid\SortableGridBehavior;
+use yii\base\Event;
 use Yii;
+use yii\db\BaseActiveRecord;
+use yii\db\Transaction;
 
 /**
  * This is the model class for table "image".
@@ -100,6 +103,11 @@ class Image extends \yii\db\ActiveRecord
         ];
     }
 
+    public function init()
+    {
+        $this->on(BaseActiveRecord::EVENT_BEFORE_UPDATE, [$this, 'beforeUpdate']);
+    }
+
     /**
      * Gets query for [[Gallery]].
      *
@@ -130,6 +138,10 @@ class Image extends \yii\db\ActiveRecord
         return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('image_has_tag', ['image_id' => 'id']);
     }
 
+    /**
+     * Cleans up the files before AR is deleted
+     * @return bool
+     */
     public function beforeDelete()
     {
         $service = new \app\services\ImageProcessingService();
@@ -137,13 +149,66 @@ class Image extends \yii\db\ActiveRecord
         return true;
     }
 
+    /**
+     * @param string $tagName
+     * @return bool
+     */
     public function hasTag(string $tagName) : bool
     {
-        /** @var Tag $tag */
         foreach ($this->tags as $tag)
         {
             if ($tag->name == $tagName) { return true; }
         }
         return false;
+    }
+
+    /**
+     * @param Event $event
+     */
+    public function beforeUpdate(Event $event) : void
+    {
+        if (get_class($event->sender) === self::class)
+        {
+            /** @var self $model */
+            $model = $event->sender;
+
+            if ($model->getAttribute('order') !== $model->getOldAttribute('order'))
+            {
+                $model->sortItems($model->getOldAttribute('order'), $model->getAttribute('order'));
+            }
+        }
+    }
+
+    /**
+     * Sorts other items accordingly to current order value change
+     * @param int $oldOrder
+     * @param int $newOrder
+     */
+    protected function sortItems(int $oldOrder, int $newOrder) : void
+    {
+        /** @var Transaction $transaction */
+        $transaction = Yii::$app->db->beginTransaction(Transaction::READ_COMMITTED);
+
+        try {
+            \Yii::$app->db->createCommand(
+                "
+                    UPDATE `image`
+                    SET `order`=`order` + :increment
+                    WHERE (`order` between :minVal and :maxVal)
+                    and id != :idImage
+                ",
+                [
+                    ':minVal' => min($oldOrder, $newOrder),
+                    ':maxVal' => max($oldOrder, $newOrder),
+                    ':increment' => ($oldOrder > $newOrder) ? 1 : -1,
+                    ':idImage' => $this->id
+                ]
+            )->execute();
+
+            $transaction->commit();
+        } catch (\Exception $exception)
+        {
+            $transaction->rollBack();
+        }
     }
 }

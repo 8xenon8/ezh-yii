@@ -45,22 +45,6 @@
         background: #fdb4b4;
     }
 
-    .modalBG {
-        position: fixed;
-        background: rgba(0,0,0,0.5);
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-    }
-
-    .tagModal {
-        z-index: 100;
-        margin: 5%;
-        background: #fff;
-        padding: 20px;
-    }
-
     .tagModal .tagCont {
         float: left;
         margin: 5px 20px 5px 0;
@@ -83,11 +67,6 @@
     }
 
     #pictable tr .tagBlock .badge.btn-success, #pictable tr:hover .tagBlock .badge
-    {
-        display: inline-block;
-    }
-
-    tr:hover .hiddenTag
     {
         display: inline-block;
     }
@@ -127,8 +106,7 @@
             }
         }
 
-        $scope.imageHasTag = function(image, tag)
-        {
+        $scope.imageHasTag = function(image, tag) {
             for (let i in image.tags) {
                 if (image.tags[i] == tag.name) {
                     return true;

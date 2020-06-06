@@ -119,6 +119,58 @@ class ImageCest
         $I->seeResponseCodeIs(404);
     }
 
+    public function testSortIsCorrect(ApiTester $I)
+    {
+        $I->seeInDatabase('image', ['id' => 1, 'order' => 1 ]);
+        $I->seeInDatabase('image', ['id' => 2, 'order' => 2 ]);
+        $I->seeInDatabase('image', ['id' => 3, 'order' => 3 ]);
+        $I->seeInDatabase('image', ['id' => 4, 'order' => 4 ]);
+        $I->seeInDatabase('image', ['id' => 5, 'order' => 5 ]);
+
+        $I->sendGET("api/images?access-token=" . $this->getToken());
+        codecept_debug($I->grabResponse());
+
+        $I->sendPATCH("/api/images/4?access-token=" . $this->getToken(), ['order' => 2]);
+
+        $I->seeInDatabase('image', ['id' => 1, 'order' => 1 ]);
+        $I->seeInDatabase('image', ['id' => 4, 'order' => 2 ]);
+        $I->seeInDatabase('image', ['id' => 2, 'order' => 3 ]);
+        $I->seeInDatabase('image', ['id' => 3, 'order' => 4 ]);
+        $I->seeInDatabase('image', ['id' => 5, 'order' => 5 ]);
+
+        $I->sendPATCH("/api/images/1?access-token=" . $this->getToken(), ['order' => 3]);
+
+        $I->seeInDatabase('image', ['id' => 4, 'order' => 1 ]);
+        $I->seeInDatabase('image', ['id' => 2, 'order' => 2 ]);
+        $I->seeInDatabase('image', ['id' => 1, 'order' => 3 ]);
+        $I->seeInDatabase('image', ['id' => 3, 'order' => 4 ]);
+        $I->seeInDatabase('image', ['id' => 5, 'order' => 5 ]);
+
+        $I->sendPATCH("/api/images/5?access-token=" . $this->getToken(), ['order' => 3]);
+
+        $I->seeInDatabase('image', ['id' => 4, 'order' => 1 ]);
+        $I->seeInDatabase('image', ['id' => 2, 'order' => 2 ]);
+        $I->seeInDatabase('image', ['id' => 5, 'order' => 3 ]);
+        $I->seeInDatabase('image', ['id' => 1, 'order' => 4 ]);
+        $I->seeInDatabase('image', ['id' => 3, 'order' => 5 ]);
+
+        $I->sendPATCH("/api/images/1?access-token=" . $this->getToken(), ['order' => 3]);
+
+        $I->seeInDatabase('image', ['id' => 4, 'order' => 1 ]);
+        $I->seeInDatabase('image', ['id' => 2, 'order' => 2 ]);
+        $I->seeInDatabase('image', ['id' => 1, 'order' => 3 ]);
+        $I->seeInDatabase('image', ['id' => 5, 'order' => 4 ]);
+        $I->seeInDatabase('image', ['id' => 3, 'order' => 5 ]);
+
+        $I->sendPATCH("/api/images/2?access-token=" . $this->getToken(), ['order' => 3]);
+
+        $I->seeInDatabase('image', ['id' => 4, 'order' => 1 ]);
+        $I->seeInDatabase('image', ['id' => 1, 'order' => 2 ]);
+        $I->seeInDatabase('image', ['id' => 2, 'order' => 3 ]);
+        $I->seeInDatabase('image', ['id' => 5, 'order' => 4 ]);
+        $I->seeInDatabase('image', ['id' => 3, 'order' => 5 ]);
+    }
+
     private function getToken() : string
     {
         return \Yii::$app->params['accessToken'];

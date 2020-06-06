@@ -3,12 +3,12 @@ modules:
     enabled:
         - REST:
               depends: PhpBrowser
-              url: 'http://192.168.0.2:8000'
+              url: 'localhost'
               part: [json, db]
         - Yii2:
               part: [orm, fixtures, db]
               entryScript: index-test.php
         - Db:
-              dsn: 'mysql:host=localhost;dbname=ezh'
-              user: 'xenon'
-              password: 'starwars'
+              dsn: 'mysql:host=localhost;dbname=db'
+              user: 'user'
+              password: 'password'
