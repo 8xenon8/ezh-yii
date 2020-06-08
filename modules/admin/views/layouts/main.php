@@ -45,25 +45,25 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+    $items = [];
+    if (Yii::$app->user->isGuest) {
+        $items[] = ['label' => 'Login', 'url' => ['/admin/login']];
+    } else {
+        $items[] = ['label' => 'Images', 'url' => ['/admin/images']];
+        $items[] = ['label' => 'Tags', 'url' => ['/admin/tags']];
+        $items[] = ['label' => 'Sorting', 'url' => ['/admin/sorting']];
+        $items[] = '<li>'
+            . Html::beginForm(['/admin/logout'], 'post')
+            . Html::submitButton(
+                'Logout (' . Yii::$app->user->identity->username . ')',
+                ['class' => 'btn btn-link logout']
+            )
+            . Html::endForm()
+            . '</li>';
+    }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
-        'items' => [
-            ['label' => 'Images', 'url' => ['/admin/images']],
-            ['label' => 'Tags', 'url' => ['/admin/tags']],
-            ['label' => 'Sorting', 'url' => ['/admin/sorting']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            )
-        ],
+        'items' => $items,ну
     ]);
     NavBar::end();
     ?>
