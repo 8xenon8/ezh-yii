@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
+use app\models\Tag;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
 use app\models\ContactForm;
 
 class SiteController extends Controller
@@ -47,11 +47,13 @@ class SiteController extends Controller
             'error' => [
                 'class' => 'yii\web\ErrorAction',
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
         ];
+    }
+
+    public function beforeAction($action)
+    {
+        $this->view->params['tags'] = Tag::find()->asArray()->all();
+        return parent::beforeAction($action);
     }
 
     /**
