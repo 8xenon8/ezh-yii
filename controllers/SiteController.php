@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Image;
 use app\models\Tag;
 use Yii;
 use yii\filters\AccessControl;
@@ -81,6 +82,15 @@ class SiteController extends Controller
         }
         return $this->render('contact', [
             'model' => $model,
+        ]);
+    }
+
+    public function actionTags()
+    {
+        $images = Image::find()->joinWith('tags')->where(['publish' => true])->orderBy(['order' => SORT_DESC])->all();
+
+        return $this->render('tags', [
+            'images' => $images
         ]);
     }
 

@@ -20,9 +20,8 @@
         "yiisoft/yii2-debug": "^2.1",
         "yiisoft/yii2-imagine": "^2.2",
         "tpmanc/yii2-imagick": "*",
-        "himiklab/yii2-sortable-grid-view-widget": "*",
-        "kartik-v/yii2-grid": "dev-master",
-        "kartik-v/yii2-editable": "@dev"
+        "ext-json": "*",
+        "ext-intl": "*"
     },
     "require-dev": {
         "yiisoft/yii2-gii": "~2.1.0",

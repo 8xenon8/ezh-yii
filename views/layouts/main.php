@@ -39,7 +39,6 @@ AppAsset::register($this);
     <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/angular.js"></script>
     <script type="text/javascript" src="/js/spotlight.cdn.js"></script>
-    <link rel="stylesheet" href="https://rawcdn.githack.com/nextapps-de/spotlight/0.6.3/dist/css/spotlight.css">
     <script type="text/javascript" src="/js/isotope.pkgd.min.js"></script>
     <script type="text/javascript" src="/js/masonry-horizontal.js"></script>
     <script type="text/javascript" src="/js/imagesloaded.pkgd.min.js"></script>
