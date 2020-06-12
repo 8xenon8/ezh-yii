@@ -35,14 +35,9 @@ AppAsset::register($this);
     <!--[if lt IE 9]><script type="text/javascript" src="/js/html5shiv.js"></script><![endif]-->
     <!--[if lt IE 9]><script type="text/javascript" src="/js/respond.min.js"></script><![endif]-->
     <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <script type="text/javascript" src="/js/masonry.min.js"></script>
-    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/angular.js"></script>
     <script type="text/javascript" src="/js/spotlight.cdn.js"></script>
     <script type="text/javascript" src="/js/isotope.pkgd.min.js"></script>
-    <script type="text/javascript" src="/js/masonry-horizontal.js"></script>
-    <script type="text/javascript" src="/js/imagesloaded.pkgd.min.js"></script>
-    <script type="text/javascript" src="/js/jquery.fancybox.js"></script>
     <script type="text/javascript" src="/js/packery-mode.pkgd.js"></script>
 
 
