@@ -93,16 +93,6 @@ class Image extends \yii\db\ActiveRecord
         ];
     }
 
-    public function behaviors()
-    {
-        return [
-            'sort' => [
-                'class' => SortableGridBehavior::className(),
-                'sortableAttribute' => 'order'
-            ],
-        ];
-    }
-
     public function init()
     {
         $this->on(BaseActiveRecord::EVENT_BEFORE_UPDATE, [$this, 'beforeUpdate']);
