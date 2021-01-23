@@ -42,3 +42,5 @@ tests/api.suite.yml
 /config/params.php
 
 /web/img/upload/*
+
+.env

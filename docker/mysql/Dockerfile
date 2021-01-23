@@ -1,0 +1,6 @@
+FROM mysql:5.6.35
+
+ENV MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+ENV MYSQL_DATABASE=$MYSQL_DATABASE
+
+ADD dump.sql /docker-entrypoint-initdb.d

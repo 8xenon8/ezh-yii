@@ -52,7 +52,32 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => ['api/image', 'api/tag']]
+                'admin/<action:\w+>' => 'admin/default/<action>',
+                'login' => 'admin/default/login',
+
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'api/image',
+                    'extraPatterns' => [
+                        'POST {id}/tags/{tagName}' => 'toggleTag',
+                        'DELETE {id}/tags/{tagName}' => 'toggleTag',
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\d+>',
+                        '{tagName}' => '<tagName:\\w+>',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'api/tag',
+                    'patterns' => [
+                        'POST {tagName}' => 'create',
+                        'DELETE {tagName}' => 'delete'
+                    ],
+                    'tokens' => [
+                        '{tagName}' => '<tagName:\\w+>',
+                    ],
+                ]
             ],
         ],
     ],

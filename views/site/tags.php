@@ -234,7 +234,7 @@
     function rearrangeGrid()
     {
         reassignSpotlight();
-        $('.grid').isotope({filter: selector});
+        grid.isotope({filter: selector});
     }
 
     var tagsURI = decodeURIComponent(window.location.href).match(/\/tags\/[А-Яа-я,_]+/);
