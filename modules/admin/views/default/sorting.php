@@ -46,18 +46,11 @@
 
 <div class="grid-sorting">
     <div class="sort-wrap">
-        <?php
-
-        foreach ($dataProvider->query->all()     as $index => $image)
-        {
-            ?>
+        <?php foreach ($dataProvider->query->all() as $index => $image) : ?>
             <figure data-id="<?= $image['id']; ?>"  data-order="<?= $image['order']; ?>" draggable="true" class="img-rounded" style="width: 150px; height: 150px; overflow: hidden; display: inline-block;">
-                <img draggable="false" src="/img/upload/<?= $image['preview']; ?>" <?php if ($image['orig_height'] <= $image['orig_width']) {?>height="150" <?php } else { ?>width="150"<?php } ?>>
+                <img draggable="false" src="/img/upload/<?= $image['preview']; ?>" <?php if ($image['orig_height'] <= $image['orig_width']) : ?>height="150" <?php else : ?>width="150"<?php endif; ?>>
             </figure>
-            <?
-        }
-
-        ?>
+        <?php endforeach; ?>
         <br clear="both">
     </div>
 </div>

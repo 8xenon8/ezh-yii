@@ -9,25 +9,27 @@
 namespace app\modules\api\controllers;
 
 
+use app\models\Image;
 use app\models\Tag;
+use app\modules\api\controllers\actions\ToggleTagAction;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\QueryParamAuth;
 use yii\rest\ActiveController;
+use yii\rest\ViewAction;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 
 class TagController extends ActiveController
 {
-    public $modelClass = 'app\models\Tag';
+    public $modelClass = Tag::class;
 
     public function actions()
     {
         $actions = parent::actions();
-        unset($actions['update']);
         unset($actions['view']);
-        unset($actions['index']);
         unset($actions['create']);
         unset($actions['delete']);
+
         return $actions;
     }
 
@@ -69,5 +71,27 @@ class TagController extends ActiveController
             throw new BadRequestHttpException(implode('; ', $tag->getErrorSummary()));
         }
         return \Yii::$app->response->setStatusCode(204);
+    }
+
+    public function actionToggle(string $tagName, int $imageId)
+    {
+        /** @var Image $image */
+        $image = Image::findOne($imageId);
+        if (!$image) {
+            return \Yii::$app->response->setStatusCode(404, 'Image not found');
+        }
+        /** @var Tag $tag */
+        $tag = Tag::findOne(["name" => $tagName]);
+        if (!$tag) {
+            return \Yii::$app->response->setStatusCode(404, 'Tag not found');
+        }
+
+        $method = \Yii::$app->request->method;
+
+        if ($method === 'POST' && !$image->hasTag($tag->name)) {
+            $image->link('tags', $tag);
+        } else if ($method === 'DELETE') {
+            $image->unlink('tags', $tag, true);
+        }
     }
 }

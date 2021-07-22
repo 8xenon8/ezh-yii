@@ -258,7 +258,7 @@
         $scope.toggleTag = function(image, tag, create) {
             $http({
                 method: create ? 'POST' : 'DELETE',
-                url: "/api/images/" + image.id + "/tags/" + tag.name + "?access-token=<?= \Yii::$app->params['accessToken'];?>",
+                url: "/api/tags/toggle/" + tag.name + "/" + image.id + "?access-token=<?= \Yii::$app->params['accessToken'];?>",
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }

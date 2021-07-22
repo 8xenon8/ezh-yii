@@ -20,7 +20,7 @@ use yii\rest\UpdateAction;
 use yii\web\UploadedFile;
 use app\models\Image;
 
-require_once __DIR__ . '/actions/TagActions.php';
+require_once __DIR__ . '/actions/ToggleTagAction.php';
 
 /**
  * Class ImageController
@@ -28,18 +28,13 @@ require_once __DIR__ . '/actions/TagActions.php';
  */
 class ImageController extends ActiveController
 {
-    public $modelClass = \app\models\Image::class;
+    public $modelClass = Image::class;
+    public $enableCsrfValidation = false;
 
     public function actions()
     {
         $actions = parent::actions();
         unset($actions['create']);
-
-        $actions['toggleTag'] = [
-            'class' => '\app\modules\api\controllers\ToggleTagAction',
-            'modelClass' => $this->modelClass,
-            'checkAccess' => [$this, 'checkAccess'],
-        ];
 
         return $actions;
     }

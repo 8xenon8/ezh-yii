@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "tag".
  *
  * @property int $id
- * @property string|null $name
+ * @property string $name
  *
  * @property ImageHasTag[] $imageHasTags
  * @property Image[] $images
@@ -30,7 +30,8 @@ class Tag extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 45],
-            [['name'], 'unique']
+            [['name'], 'unique'],
+            [['name'], 'required'],
         ];
     }
 
