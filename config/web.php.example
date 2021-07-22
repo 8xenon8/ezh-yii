@@ -70,6 +70,7 @@ $config = [
                     'controller' => 'api/image',
                 ],
                 '/admin/<action:\w+>' => '/admin/default/<action>',
+                '/<action:\w+>' => '/site/<action>',
             ],
         ],
     ],
