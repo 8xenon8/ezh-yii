@@ -54,35 +54,20 @@ class SiteController extends Controller
     public function beforeAction($action)
     {
         $this->view->params['tags'] = Tag::find()->asArray()->all();
+
+        if ($action->id === 'tags') {
+            $tagString = $this->request->queryParams['tags'] ?? '';
+            $this->view->params['selectedTags'] = $tagString ? explode(',', $tagString) : [];
+        } else {
+            $this->view->params['selectedTags'] = [];
+        }
+
         return parent::beforeAction($action);
     }
 
-    /**
-     * Displays homepage.
-     *
-     * @return string
-     */
     public function actionIndex()
     {
         return $this->render('index');
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionAbous()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
     }
 
     public function actionTags()
@@ -94,11 +79,6 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
     public function actionAbout()
     {
         return $this->render('about');

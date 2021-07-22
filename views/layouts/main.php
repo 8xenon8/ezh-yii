@@ -3,6 +3,7 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
+use app\helpers\TagUrlHelper;
 use yii\helpers\Html;
 use app\assets\AppAsset;
 
@@ -861,23 +862,18 @@ AppAsset::register($this);
     <section class="tags">
 
         <p class="showTags">Показать тeги</p>
-        <?php
-
-        $uriParts = explode('/',$_SERVER['REQUEST_URI']);
-        $selectedTags = array_map(function($i) { return urldecode($i); }, array_filter(explode(',', $uriParts[count($uriParts) - 1]), function($i) { return $i != ''; }));
-        $selectedTags = $selectedTags ?: [];
-
-        ?>
 
         <section class="taglist">
-
+            <?php $selectedTags = $this->params['selectedTags'] ?? []; ?>
             <?php foreach ($this->params["tags"] as $tag) : ?>
-                <?php if (in_array($tag['name'], $selectedTags)) : ?>
-                    <?php $url = "/tags/" . implode(',', array_filter($selectedTags, function($i) use ($tag) { return $i != $tag['name']; })) ?>
-                <?php else : ?>
-                    <?php $url = "/tags/" . implode(',', array_merge($selectedTags, [$tag['name']]))?>
-                <?php endif; ?>
-                <a class="tag<?php if (in_array($tag['name'],  $selectedTags)) : ?> selected<?php endif; ?>" data-filter=".<?=transliterator_transliterate('Russian-Latin/BGN', $tag["name"]); ?>" data-id="<?= $tag['name']; ?>" href="<?= $url; ?>">#<?= $tag['name']; ?></a>
+                <a
+                        class="tag<?php if (in_array($tag['name'],  $selectedTags)) : ?> selected<?php endif; ?>"
+                        data-filter=".<?=transliterator_transliterate('Russian-Latin/BGN', $tag["name"]); ?>"
+                        data-id="<?= $tag['name']; ?>"
+                        href="<?= TagUrlHelper::combineTagQueryString($tag["name"], $selectedTags); ?>"
+                >
+                    #<?= $tag['name']; ?>
+                </a>
             <?php endforeach; ?>
 
         </section>

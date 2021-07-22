@@ -51,6 +51,9 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'normalizer' => [
+                'class' => 'yii\web\UrlNormalizer'
+            ],
             'rules' => [
                 [
                     'class' => 'yii\rest\UrlRule',
@@ -69,8 +72,11 @@ $config = [
                     'class' => 'yii\rest\UrlRule',
                     'controller' => 'api/image',
                 ],
+                '/admin' => '/admin/default/index',
                 '/admin/<action:\w+>' => '/admin/default/<action>',
-                '/<action:\w+>' => '/site/<action>',
+                '/about' => '/site/about',
+                '/tags' => '/site/tags',
+                '/tags/<tags>' => '/site/tags',
             ],
         ],
     ],
