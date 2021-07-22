@@ -20,8 +20,6 @@ use yii\rest\UpdateAction;
 use yii\web\UploadedFile;
 use app\models\Image;
 
-require_once __DIR__ . '/actions/ToggleTagAction.php';
-
 /**
  * Class ImageController
  * @package app\modules\api\controllers
