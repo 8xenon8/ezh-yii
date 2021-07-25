@@ -2,10 +2,10 @@
 
 namespace app\services;
 
-use \app\models\Image;
+use app\models\Image;
 use yii\web\UploadedFile;
 
-class ImageProcessingService
+class ImageService
 {
 	private $watermarkFilepath = __DIR__ . '/../web/img/watermark.png';
 	private $uploadDir = __DIR__ . '/../web/img/upload/';
@@ -67,11 +67,6 @@ class ImageProcessingService
 		$imageAr->orig_height = $image->getImageHeight();
 		$imageAr->preview = $previewName;
 		$imageAr->thumb = $thumbnailName;
-
-		if (!$imageAr->save())
-		{
-			throw new \Exception(implode("\n", array_map(function($i) { return implode("\n", $i); }, $imageAr->getErrors())));
-		}
 
 		return $imageAr;
 	}

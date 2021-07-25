@@ -3,7 +3,7 @@
 namespace tests\unit\services;
 
 use \app\models\Image;
-use app\services\ImageProcessingService;
+use app\services\ImageService;
 
 class ImageProcessingServiceTest extends \Codeception\Test\Unit
 {
@@ -30,7 +30,7 @@ class ImageProcessingServiceTest extends \Codeception\Test\Unit
 
 	public function testProcessImage()
 	{
-		$service = new ImageProcessingService();
+		$service = new ImageService();
 
 		$this->assertFalse(file_exists($this->getUploadDir() . $this->expectedOrigName), "Ensure that original file does not exists");
 		$this->assertFalse(file_exists($this->getUploadDir() . $this->expectedPreviewName), "Ensure that preview file does not exists");
@@ -50,7 +50,7 @@ class ImageProcessingServiceTest extends \Codeception\Test\Unit
 
 	public function testDeleteImageFiles()
 	{
-	    $service = new ImageProcessingService();
+	    $service = new ImageService();
 
 		$image = $service->processImage($this->filename);
 

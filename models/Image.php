@@ -49,6 +49,7 @@ class Image extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['orig', 'preview', 'thumb'], 'required'],
             [['description'], 'string'],
             [['gallery_id', 'orig_width', 'orig_height', 'preview_width', 'preview_height', 'thumb_width', 'thumb_height', 'order'], 'integer'],
             [['publish'], 'boolean'],
@@ -134,7 +135,7 @@ class Image extends \yii\db\ActiveRecord
      */
     public function beforeDelete()
     {
-        $service = new \app\services\ImageProcessingService();
+        $service = new \app\services\ImageService();
         $service->deleteImageFiles($this);
         return true;
     }

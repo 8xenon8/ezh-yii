@@ -122,7 +122,7 @@ class DefaultController extends Controller
     public function actionSorting()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Image::find()->asArray()
+            'query' => Image::find()->orderBy('order')->asArray()
         ]);
 
         return $this->render('sorting', [

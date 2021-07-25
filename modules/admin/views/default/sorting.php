@@ -134,7 +134,7 @@
 
             $.ajax({
                 type: "PATCH",
-                url: "/api/image/" + draggableId + "?access-token=<?= \Yii::$app->params['accessToken'] ?>",
+                url: "/api/images/" + draggableId + "?access-token=<?= \Yii::$app->params['accessToken'] ?>",
                 data: {
                     "insertable": draggableOrder,
                     "order": droppableOrder,

@@ -1,7 +1,7 @@
 <?php
 
 $customClasses = [
-	'app\services\ImageProcessingService' => __DIR__ . '/../services/ImageProcessingService.php'
+	'app\services\ImageService' => __DIR__ . '/../services/ImageService.php'
 ];
 
 Yii::$classMap = array_merge(Yii::$classMap, $customClasses);

@@ -8,7 +8,7 @@
 
 namespace app\modules\api\controllers;
 
-use app\services\ImageProcessingService;
+use app\services\ImageService;
 use yii\rest\Action;
 use yii\rest\ActiveController;
 use yii\filters\auth\CompositeAuth;
@@ -56,9 +56,22 @@ class ImageController extends ActiveController
         $files = UploadedFile::getInstancesByName("image");
         $images = [];
 
+        $order = Image::find()->count() + 1;
+
         foreach ($files as $file) {
-            $service = new ImageProcessingService();
-            $images[] = $service->processImage($file);
+            $service = new ImageService();
+            $image = $service->processImage($file);
+
+            $image->order = $order;
+
+            if (!$image->save())
+            {
+                throw new \Exception(implode("\n", array_map(function($i) { return implode("\n", $i); }, $image->getErrors())));
+            }
+
+            $order++;
+
+            $images[] = $image;
         }
 
         if (empty($images)) {
