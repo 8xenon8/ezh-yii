@@ -118,11 +118,8 @@
             var draggableIndex = $(dragSrcEl).closest('figure').index();
             var droppableIndex = $(this).index();
 
-            var draggableOrder = $(dragSrcEl).closest('figure').data('order');
-            var droppableOrder = $(this).data('order');
-
-            var draggable = document.querySelector('figure[data-order="' + draggableOrder + '"]');
-            var droppable = document.querySelector('figure[data-order="' + droppableOrder + '"]');
+            var draggable = document.querySelector('figure[data-order="' + (draggableIndex + 1) + '"]');
+            var droppable = document.querySelector('figure[data-order="' + (droppableIndex + 1) + '"]');
 
             if (draggableIndex > droppableIndex) {
                 droppable.before(draggable);
@@ -136,12 +133,16 @@
                 type: "PATCH",
                 url: "/api/images/" + draggableId + "?access-token=<?= \Yii::$app->params['accessToken'] ?>",
                 data: {
-                    "insertable": draggableOrder,
-                    "order": droppableOrder,
+                    "insertable": draggableIndex + 1,
+                    "order": droppableIndex + 1,
                     "insertType": insertType
                 },
                 success: function(data) {
-                    // console.log(data);
+                    let order = 1;
+
+                    $('figure.img-rounded').each(function(i, e) {
+                        $(this).attr('data-order', order++);
+                    });
                 },
             });
         }
@@ -168,4 +169,4 @@
     var cols = document.querySelectorAll('.grid-sorting figure');
     [].forEach.call(cols, addDnDHandlers);
 
-</script>   
+</script>
