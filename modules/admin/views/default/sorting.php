@@ -1,5 +1,6 @@
-<style>
+<script src="/js/jquery.min.js"></script>
 
+<style>
     .img-rounded
     {
         position: relative;
@@ -41,6 +42,26 @@
         right: 0;
         top: 0;
     }
+
+    #edit-image-tab
+    {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 500px;
+        background: white;
+        padding: 30px;
+        margin-bottom: 0;
+    }
+
+    #edit-image-tab {
+        display: none;
+    }
+
+    #image_wrapper {
+        text-align: center;
+    }
 </style>
 
 
@@ -53,6 +74,35 @@
         <?php endforeach; ?>
         <br clear="both">
     </div>
+</div>
+
+<div id="edit-image-tab" class="panel panel-default">
+    <div class="col-md-1"></div>
+    <div class="col-md-3">
+        <div id="image_wrapper"></div>
+    </div>
+        <div class="col-md-4">
+            <form role="form">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" id="name">
+                </div>
+                <div class="form-group">
+                    <label for="description">Comment:</label>
+                    <textarea class="form-control" rows="10" id="description"></textarea>
+                </div>
+                <div class="form-group float-left">
+                    <label>
+                        <input type="checkbox" name="publish" id="publish"> Is published
+                    </label>
+                </div>
+                <div class="form-group float-right">
+                    <input type="submit" class="btn btn-success" value="Submit"/>
+                    <input id="close-edit-tab" style="float: right" type="button" class="btn btn-danger" value="Close"/>
+                </div>
+            </form>
+        </div>
+    <div class="col-md-2"></div>
 </div>
 
 <script>
@@ -169,4 +219,53 @@
     var cols = document.querySelectorAll('.grid-sorting figure');
     [].forEach.call(cols, addDnDHandlers);
 
+    $('.img-rounded').dblclick(getImageData);
+
+    function getImageData() {
+        var id = $(this).data('id');
+
+        console.log(id);
+
+        showLoader();
+
+        $.ajax({
+            type: "GET",
+            url: "/api/images/" + id + "?access-token=<?= \Yii::$app->params['accessToken'] ?>",
+            success: function(data) {
+                hydrateEditTab(data);
+                $('#edit-image-tab').show();
+            },
+            failure: function(data) {
+                PNotify.error("Can't load data for image #" + id);
+            },
+            complete: function() {
+                hideLoader();
+            }
+        });
+    }
+
+    function showLoader() {
+        $('#loader').show();
+    }
+
+    function hideLoader() {
+        $('#loader').hide();
+    }
+
+    function hydrateEditTab(data) {
+        $('#edit-image-tab #image_wrapper').html('');
+        var img = $('<img src="/img/upload/' + data.preview + '" width="' + data.preview_width + '" height="' + data.preview_height + '">');
+        $('#edit-image-tab #image_wrapper').append(img);
+
+        $('#edit-image-tab #name').val(data.name ? data.name : '');
+        $('#edit-image-tab #description').val(data.description ? data.description : '');
+
+        if (data.publish) {
+            $('#edit-image-tab #publish').attr('checked', 'checked');
+        }
+    }
+
+    $('#close-edit-tab').click(function() {
+        $('#edit-image-tab').hide();
+    })
 </script>
